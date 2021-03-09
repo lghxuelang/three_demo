@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>三维</title>
+    <link rel="stylesheet" href="https://dev.arcgisonline.cn/jsapi/4.16/esri/css/main.css" type="text/css" />
+    <style>
+        /* 去掉地图点击蓝色边框 */
+        .esri-view .esri-view-surface--inset-outline:focus::after {
+            outline: auto 0px Highlight !important;
+            outline: auto 0px -webkit-focus-ring-color !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script src="./config/config.js"></script>
+
+</body>
+
+</html>

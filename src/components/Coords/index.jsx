@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import Orbitcontrols from 'three-orbitcontrols'; //鼠标手势操作组件
 
-import styles from './index.less';
+import styles from '../index.less';
 
 const Bbox = () => {
   const boxRef = useRef();
@@ -14,44 +14,8 @@ const Bbox = () => {
   const init = () => {
     let scene = new THREE.Scene();
 
-    var axisHelper = new THREE.AxisHelper(450);
+    let axisHelper = new THREE.AxisHelper(450);
     scene.add(axisHelper);
-
-    var geometry = new THREE.BufferGeometry(); //创建一个Buffer类型几何体对象
-    //类型数组创建顶点数据
-    var vertices = new Float32Array([
-      0,
-      0,
-      0, //顶点1坐标
-      50,
-      0,
-      0, //顶点2坐标
-      0,
-      100,
-      0, //顶点3坐标
-      0,
-      0,
-      10, //顶点4坐标
-      0,
-      0,
-      100, //顶点5坐标
-      50,
-      0,
-      10, //顶点6坐标
-    ]);
-    // 创建属性缓冲区对象
-    var attribue = new THREE.BufferAttribute(vertices, 3); //3个为一组，表示一个顶点的xyz坐标
-    // 设置几何体attributes属性的位置属性
-    geometry.attributes.position = attribue;
-
-    let sphereMaterial = new THREE.MeshPhongMaterial({
-      color: 0x0000ff,
-      specular: 0x4488ee,
-      shininess: 12,
-    }); //材质对象
-    let mesh = new THREE.Mesh(geometry, sphereMaterial);
-    mesh.translateY(120);
-    scene.add(mesh);
 
     let pointLight = new THREE.PointLight(0xffffff);
     pointLight.position.set(400, 200, 300);
@@ -69,6 +33,28 @@ const Bbox = () => {
     renderer.setSize(width, height);
     renderer.setClearColor(0xb9d3ff, 1);
     boxRef.current.appendChild(renderer.domElement);
+
+    //创建两个网格模型mesh1、mesh2
+    var geometry = new THREE.BoxGeometry(20, 20, 20);
+    var material1 = new THREE.MeshLambertMaterial({ color: 0x0000ff });
+    var group = new THREE.Group();
+
+    var mesh1 = new THREE.Mesh(geometry, material1);
+
+    mesh1.position.set(50, 50, 50);
+    //把mesh1型插入到组group中，mesh1作为group的子对象
+    group.add(mesh1);
+    //把group插入到场景中作为场景子对象
+    scene.add(group);
+    group.position.set(50, 10, 10);
+    // .position属性获得本地坐标
+    console.log('本地坐标', mesh1.position);
+    // getWorldPosition()方法获得世界坐标
+    //该语句默认在threejs渲染的过程中执行,如果渲染之前想获得世界矩阵属性、世界位置属性等属性，需要通过代码更新
+    scene.updateMatrixWorld(true);
+    var worldPosition = new THREE.Vector3();
+    mesh1.getWorldPosition(worldPosition);
+    console.log('世界坐标', worldPosition);
 
     const renderBox = () => {
       renderer.render(scene, camera);
