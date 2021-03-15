@@ -40,7 +40,7 @@ const Bbox = () => {
 
     // 创建video对象
     let video = document.createElement('video');
-    video.src = './videos/movie.ogv'; // 设置视频地址
+    video.src = './videos/sintel.ogv'; // 设置视频地址
     video.autoplay = 'autoplay'; //要设置播放
     video.loop = 'loop'; //循环播放
 
@@ -49,12 +49,14 @@ const Bbox = () => {
     // texture.needsUpdate = true;
     var geometry = new THREE.BoxGeometry(100, 100, 100); //立方体
     let normal = new THREE.TextureLoader().load('./images/normal.jpg');
+    texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.minFilter = THREE.LinearFilter;
     var material = new THREE.MeshPhongMaterial({
       map: texture, // 设置纹理贴图
-      normalMap:normal,
+      // normalMap: normal,
       side: THREE.DoubleSide,
     }); //材质对象Material
-    
+
     var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
     scene.add(mesh); //网格模型添加到场景中
     // material.map = texture;

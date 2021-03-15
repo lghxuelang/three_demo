@@ -12,6 +12,7 @@ import Shape from '@/components/Shape'
 import Extrude from '@/components/Extrude'
 import Texture from '@/components/Texture'
 import VideoTexture from '@/components/VideoTexture'
+import Sprite from '@/components/Sprite'
 import styles from './index.css';
 
 export default function() {
@@ -31,6 +32,7 @@ export default function() {
       {/* <Extrude /> */}
       {/* <Texture /> */}
       <VideoTexture />
+      {/* <Sprite /> */}
     </div>
   );
 }
