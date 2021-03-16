@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import esriLoader from '@/utils/jsapi';
 
 let obj = {};
@@ -25,6 +25,9 @@ const Foo = ({ view }) => {
       scene: null, // three.js scene
       ambient: null, // three.js ambient light source
       sun: null, // three.js sun light source
+
+      mixer: null,
+      clock: new THREE.Clock(),
 
       setup: function(context) {
         this.scene = new THREE.Scene();
@@ -67,28 +70,41 @@ const Foo = ({ view }) => {
         // setup the three.js scene
         ///////////////////////////////////////////////////////////////////////////////////////
 
-        let geometry = new THREE.CylinderGeometry(3500, 9500, 200000, 80);
-        let sphereMaterial = new THREE.MeshPhongMaterial({
-          color: 0xff0000,
-          specular: 0x4488ee,
-          shininess: 12,
-        }); //材质对象
-        let mesh = new THREE.Mesh(geometry, sphereMaterial);
-        var renderPos = [0, 0, 0];
+        const gltfLoader = new GLTFLoader();
+        gltfLoader.load(
+          './models/multi.glb',
+          gltf => {
+            this.animationFrame(gltf);
+          },
+          undefined,
+          function(error) {
+            console.error('Error loading Model. ', error);
+          },
+        );
+
+        context.resetWebGLState();
+      },
+      animationFrame: function(gltf) {
+        let model = gltf.scene;
+        model.scale.set(300000, 300000, 300000);
+        model.rotateX(Math.PI / 4);
+        model.rotateY(Math.PI / 2);
+        this.scene.add(model);
+
+        this.mixer = new THREE.AnimationMixer(model);
+        let animation = gltf.animations[1];
+        this.mixer.clipAction(animation).play();
+        let renderPos = [0, 0, 0];
         externalRenderers.toRenderCoordinates(
           view,
-          [120, 36, 10],
+          [120, 36, 100],
           0,
           SpatialReference.WGS84,
           renderPos,
           0,
           1,
         );
-        mesh.position.set(renderPos[0], renderPos[1], renderPos[2]);
-        mesh.scale.set(10, 10, 10);
-        this.scene.add(mesh);
-
-        context.resetWebGLState();
+        model.position.set(renderPos[0], renderPos[1], renderPos[2]);
       },
       render: function(context) {
         // update camera parameters
@@ -120,6 +136,9 @@ const Foo = ({ view }) => {
         // draw the scene
         /////////////////////////////////////////////////////////////////////////////////////////////////////
         this.renderer.resetGLState();
+        if (this.mixer) {
+          this.mixer.update(this.clock.getDelta());
+        }
         this.renderer.render(this.scene, this.camera);
         // as we want to smoothly animate the ISS movement, immediately request a re-render
         externalRenderers.requestRender(view);

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import esriLoader from '@/utils/jsapi';
 
 import Foo from '@/components/foo';
+import MapModel from '@/components/MapModels';
 import styles from './index.less';
 
 const MapPage = () => {
@@ -38,7 +39,7 @@ const MapPage = () => {
   return (
     <>
       <div className={styles.wrap} ref={mapRef}></div>
-      {view ? <Foo view={view} /> : <div />}
+      {view ? <MapModel view={view} /> : <div />}
     </>
   );
 };
